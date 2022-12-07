@@ -6,17 +6,20 @@ using System.Threading.Tasks;
 
 namespace Dir
 {
-    internal class File : IFile
+    internal class File
     {
+        private string _path;
         public string Name { get; }
         public long Size { get; }
         public string Type { get; }
 
-        public File(string name, string type, long size)
+        public File(string path)
         {
-            Name = name;
-            Size = size;
-            Type = type;
+            _path = path;
+            var fileInfo = new FileInfo(path);
+            Name = fileInfo.Name;
+            Size = fileInfo.Length;
+            Type = fileInfo.Extension;
         }
     }
 }
