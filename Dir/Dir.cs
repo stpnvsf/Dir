@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace Dir
 {
-    internal class Dir
+    public class Dir
     {
         private string _path;
         public string Name { get; }
-        public long Size { get; }
+        public double Size { get; }
 
         public Dictionary<string, int> FrequencyByType => GetFrequencyByType();
         public Dictionary<string, double> AverageSize => GetAverageSize();
         public List<Dir>? Subdirectories { get; }
         public List<File>? Files { get; }
+        private List<File>? AllFiles { get; }
 
         public Dir(string path)
         {
@@ -23,11 +24,19 @@ namespace Dir
             {
                 _path = path;
                 Name = new DirectoryInfo(_path).Name;
+                AllFiles = new List<File>();
                 Files = new List<File>();
                 Subdirectories = new List<Dir>();
 
+                foreach (var file in Directory.GetFiles(path))
+                {
+                    Files.Add(new File(file));
+                }
+
                 GetSubdirectories(path);
                 GetAllFiles(path);
+
+                Size = AllFiles.Sum(x => x.Size) / 1000.0;
 
             }
 
@@ -40,7 +49,7 @@ namespace Dir
 
             foreach (var file in t)
             {
-                Files.Add(new File(file));
+                AllFiles.Add(new File(file));
             }
 
         }
@@ -63,7 +72,7 @@ namespace Dir
                 GetAllFiles(_path);
             }
 
-            var res = Files.GroupBy(x => x.Type)
+            var res = AllFiles.GroupBy(x => x.Type)
                 .ToDictionary(x => x.Key, x => ((float)(x.Sum(y => y.Size) / x.Count())) / 1000.0);
 
             return res;
@@ -77,7 +86,7 @@ namespace Dir
             {
                 GetAllFiles(_path);
             }
-            var res = Files.GroupBy
+            var res = AllFiles.GroupBy
                 (x => x.Type).ToDictionary(x => x.Key, x => (x.Count()));
 
             return res;

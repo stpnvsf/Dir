@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dir
 {
-    internal class File
+    public class File
     {
         private string _path;
         public string Name { get; }

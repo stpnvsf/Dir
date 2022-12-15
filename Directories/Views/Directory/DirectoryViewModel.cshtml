@@ -1,0 +1,80 @@
+﻿@model Dir.Dir
+
+<div>
+    <h4>Directory info</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Size)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Size) kb
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FrequencyByType)
+        </dt>
+        <dd class="col-sm-10">
+            <dl class="row">
+                @foreach (var item in Model.FrequencyByType)
+                {
+                    <dt class="col-sm-4">@item.Key</dt>
+                    <dd class="col-sm-8">@item.Value</dd>
+                }
+            </dl>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AverageSize)
+        </dt>
+        <dd class="col-sm-10">
+            <dl class="row">
+                @foreach (var item in Model.AverageSize)
+                {
+                    <dt class="col-sm-4">@item.Key</dt>
+                    <dd class="col-sm-8">@item.Value</dd>
+                }
+            </dl>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Subdirectories) and
+            @Html.DisplayNameFor(model => model.Files)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                BuildHierarchy(Model);
+            }
+        </dd>
+    </dl>
+</div>
+
+@{
+    void BuildHierarchy(Dir.Dir dir)
+    {
+        if (dir.Subdirectories.Any())
+        {
+            <ul style="list-style-type: square">
+                @foreach (Dir.Dir subdir in dir.Subdirectories)
+                {
+                    <li>@subdir.Name</li>
+                    BuildHierarchy(subdir);
+                }
+            </ul>
+            <ul style="list-style-type: circle">
+                @foreach (Dir.File file in dir.Files)
+                {
+                    <li>@file.Name</li>
+                }
+            </ul>
+        }
+    }
+}
+
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>
