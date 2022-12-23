@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Dir
 {
     public class File
     {
-        private string _path;
+        public readonly string Path;
         public string Name { get; }
         public long Size { get; }
         public string Type { get; }
 
         public File(string path)
         {
-            _path = path;
+            Path = path;
             var fileInfo = new FileInfo(path);
             Name = fileInfo.Name;
             Size = fileInfo.Length;

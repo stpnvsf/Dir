@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Dir
+﻿namespace Dir
 {
     public class Dir
     {
-        private string _path;
-        public string Name { get; }
+        public readonly string Path = null!;
+        public string Name { get; } = null!;
         public double Size { get; }
 
         public Dictionary<string, int> FrequencyByType => GetFrequencyByType();
         public Dictionary<string, double> AverageSize => GetAverageSize();
-        public List<Dir>? Subdirectories { get; }
-        public List<File>? Files { get; }
-        private List<File>? AllFiles { get; }
+        public List<Dir> Subdirectories { get; }
+        public List<File> Files { get; }
+        private List<File> AllFiles { get; }
 
         public Dir(string path)
         {
             if (Directory.Exists(path))
             {
-                _path = path;
-                Name = new DirectoryInfo(_path).Name;
+                Path = path;
+                Name = new DirectoryInfo(path).Name;
                 AllFiles = new List<File>();
                 Files = new List<File>();
                 Subdirectories = new List<Dir>();
@@ -37,61 +31,50 @@ namespace Dir
                 GetAllFiles(path);
 
                 Size = AllFiles.Sum(x => x.Size) / 1000.0;
-
             }
-
         }
 
         private void GetAllFiles(string path)
         {
-
             var t = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
 
             foreach (var file in t)
             {
                 AllFiles.Add(new File(file));
             }
-
         }
 
         private void GetSubdirectories(string path)
         {
-
             foreach (var dir in Directory.GetDirectories(path))
             {
                 Subdirectories.Add(new Dir(dir));
             }
-
         }
 
         public Dictionary<string, double> GetAverageSize(bool reload = false)
         {
-
             if (reload)
             {
-                GetAllFiles(_path);
+                GetAllFiles(Path);
             }
 
             var res = AllFiles.GroupBy(x => x.Type)
                 .ToDictionary(x => x.Key, x => ((float)(x.Sum(y => y.Size) / x.Count())) / 1000.0);
 
             return res;
-
         }
 
         public Dictionary<string, int> GetFrequencyByType(bool reload = false)
         {
-
             if (reload)
             {
-                GetAllFiles(_path);
+                GetAllFiles(Path);
             }
             var res = AllFiles.GroupBy
                 (x => x.Type).ToDictionary(x => x.Key, x => (x.Count()));
 
             return res;
-
         }
-
     }
 }

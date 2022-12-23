@@ -1,34 +1,35 @@
-﻿@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Directory</h1>
-
-<input type="text" id="dir" />
-
-<div id="partialModal"></div>
+﻿<div class="container-fluid">
+    <h1>Directory</h1>
+    <div class="row row-cols-2">
+        <div class="col">
+            <div class="input-group mb-3">
+                <input id="input" type="text" class="form-control" placeholder="Path" aria-label="Path" aria-describedby="button-dir" />
+                <button class="btn btn-outline-info" id="button-dir"><span class="e-icons e-check"></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" id="directory-info"></div>
 
 @section scripts{
 <script type="text/javascript">
 
-    $('#dir').on('keypress', function(e){
-        if(e.which == 13){
-            var path = $(this).val();
+    $('.btn').on('click', function(){
 
-           $.ajax({
-               url: '@Url.Action("Directory", "Directory")',
-               type: 'GET',
-               cache: false,
-               data: { 'path': path },
-               success: function (response) {
-                   $("#partialModal").html(response);
-               },
-               error: function () {
-                   console.log("error");
-               }
-           });
-        }
+        var path = $("#input").val();
+
+        $.ajax({
+            url: '@Url.Action("Directory", "Directory")',
+            type: 'GET',
+            cache: false,
+            data: { 'path': path },
+            success: function (response) {
+                $("#directory-info").html(response);
+            },
+            error: function () {
+                console.log("error");
+            }
+        });
     });
-
 </script>
 }
