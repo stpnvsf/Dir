@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Directories.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Directories.Controllers
 {
@@ -12,7 +14,13 @@ namespace Directories.Controllers
         [HttpGet]
         public IActionResult Directory(string path)
         {
-            return PartialView("DirectoryViewModel", new Dir.Dir(path));
+            var dir = new Dir.Dir(path);
+            return PartialView("DirectoryViewModel", dir);
+        }
+
+        public IActionResult Previous(string path)
+        {
+            return PartialView("DirectoryViewModel");
         }
     }
 }

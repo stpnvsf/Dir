@@ -1,11 +1,17 @@
 ﻿<div class="container-fluid">
     <h1>Directory</h1>
-    <div class="row row-cols-2">
-        <div class="col">
+    <div class="row">
+        <div class="col-sm-4">
             <div class="input-group mb-3">
                 <input id="input" type="text" class="form-control" placeholder="Path" aria-label="Path" aria-describedby="button-dir" />
-                <button class="btn btn-outline-info" id="button-dir"><span class="e-icons e-check"></span></button>
+                <div id="error" class="invalid-feedback" hidden>
+                    Please provide a valid directory.
+                </div>
             </div>
+        </div>
+        <div class="col-sm-2">
+            @*spinner*@
+            <button class="btn btn-outline-primary" id="button-dir" type="button"><span class="e-icons e-check"></span></button>
         </div>
     </div>
 </div>
@@ -13,6 +19,12 @@
 
 @section scripts{
 <script type="text/javascript">
+
+    $('#input').on("input", function(){
+
+        $('#input').removeClass("form-control is-invalid");
+        $('#input').addClass("form-control");
+    });
 
     $('.btn').on('click', function(){
 
@@ -27,7 +39,10 @@
                 $("#directory-info").html(response);
             },
             error: function () {
-                console.log("error");
+                $('#input').removeClass("form-control");
+                $('#input').addClass("form-control is-invalid");
+                $('#input').select();
+                $('#error').removeAttr("hidden");
             }
         });
     });

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-namespace Dir
+﻿namespace Dir
 {
     public class File
     {
