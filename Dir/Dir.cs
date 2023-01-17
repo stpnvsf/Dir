@@ -28,15 +28,15 @@ namespace Dir
 
                 _enumerationOptions = new EnumerationOptions() { IgnoreInaccessible = true };
 
-                GetSubdirectories(path);
-                GetFiles(path);
-                GetAllFiles(path);
+                GetSubdirectories();
+                GetFiles();
+                GetAllFiles(Path);
             }
         }
 
-        private void GetFiles(string path)
+        private void GetFiles()
         {
-            var files = Directory.GetFiles(path, "*", _enumerationOptions);
+            var files = Directory.GetFiles(Path, "*", _enumerationOptions);
 
             foreach (var file in files)
             {
@@ -47,18 +47,26 @@ namespace Dir
         //var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
         private void GetAllFiles(string path)
         {
-            var files = Directory.GetFiles(path, "*", _enumerationOptions);
+            var dirs = Directory.GetDirectories(path);
 
-            foreach (var file in files)
+            foreach (var dir in dirs)
             {
-                AllFiles.Add(new File(file));
+                try
+                {
+                    var files = Directory.GetFiles(dir);
+                    foreach (var file in files)
+                    {
+                        AllFiles.Add(new File(file));
+                    }
+                    GetAllFiles(dir);
+                }
+                catch { continue; }
             }
-
         }
 
-        private void GetSubdirectories(string path)
+        private void GetSubdirectories()
         {
-            var subdirectories = Directory.GetDirectories(path, "*", _enumerationOptions);
+            var subdirectories = Directory.GetDirectories(Path, "*", _enumerationOptions);
 
             foreach (var subdir in subdirectories)
             {
@@ -102,8 +110,8 @@ namespace Dir
             List<string> ancestors = new List<string>() { };
             DirectoryInfo t = new DirectoryInfo(Path);
 
-            while(t != null)
-            {   
+            while (t != null)
+            {
                 ancestors.Add(t.FullName);
                 t = t.Parent;
             }
