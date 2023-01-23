@@ -10,7 +10,6 @@
             </div>
         </div>
         <div class="col-sm-2">
-            @*spinner*@
             <button class="btn btn-outline-primary" id="button-dir" type="button"><span class="e-icons e-check"></span></button>
         </div>
     </div>
@@ -26,9 +25,10 @@
         $('#input').addClass("form-control");
     });
 
-    $('.btn').on('click', function(){
+    $('#button-dir').on('click', function(){
 
-        var path = $("#input").val();
+        var path = $('#input').val();
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 
         $.ajax({
             url: '@Url.Action("Directory", "Directory")',
@@ -43,6 +43,9 @@
                 $('#input').addClass("form-control is-invalid");
                 $('#input').select();
                 $('#error').removeAttr("hidden");
+            },
+            complete: function(){
+                $('#button-dir').html('<span class="e-icons e-check"></span>');
             }
         });
     });

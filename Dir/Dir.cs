@@ -7,8 +7,6 @@ namespace Dir
         private EnumerationOptions _enumerationOptions;
         public readonly string Path = null!;
         public string Name { get; } = null!;
-        public double Size => SetDirectorySize();
-
         public Dictionary<string, int> FrequencyByType => GetFrequencyByType();
         public Dictionary<string, double> AverageSize => GetAverageSize();
         public List<Dir> Subdirectories { get; }
@@ -43,9 +41,25 @@ namespace Dir
                 Files.Add(new File(file));
             }
         }
-        //parallel for, concurrency dictionary
-        //var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+
         private void GetAllFiles(string path)
+        {
+            var list = Directory.GetDirectories(path, "*", _enumerationOptions);
+
+            Parallel.ForEach<string>(list, WalkTree);
+        }
+
+        private void WalkTree(string path)
+        {
+            var files = Directory.GetFiles(path, "*", _enumerationOptions);
+            foreach (var file in files)
+            {
+                AllFiles.Add(new File(file));
+            }
+            GetAllFiles(path);
+        }
+
+        private void GetAllFiles2(string path)
         {
             var dirs = Directory.GetDirectories(path);
 
@@ -97,11 +111,6 @@ namespace Dir
             var res = AllFiles.GroupBy
                 (x => x.Type).ToDictionary(x => x.Key, x => (x.Count()));
 
-            return res;
-        }
-        private double SetDirectorySize(bool reload = false)
-        {
-            var res = AllFiles.Sum(x => x.Size) / 1000.0;
             return res;
         }
 
