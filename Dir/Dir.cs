@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Dir
+﻿namespace Dir
 {
     public class Dir
     {
@@ -112,20 +110,6 @@ namespace Dir
                 (x => x.Type).ToDictionary(x => x.Key, x => (x.Count()));
 
             return res;
-        }
-
-        public List<string> GetAllAncestors()
-        {
-            List<string> ancestors = new List<string>() { };
-            DirectoryInfo t = new DirectoryInfo(Path);
-
-            while (t != null)
-            {
-                ancestors.Add(t.FullName);
-                t = t.Parent;
-            }
-
-            return ancestors;
         }
     }
 }
